@@ -4,12 +4,12 @@ import {
 	Notice,
 	Plugin,
 	PluginSettingTab,
-	Setting,
 	type App,
 	type Editor,
 	type EditorPosition,
 	type MarkdownPostProcessorContext,
-	type Menu
+	type Menu,
+	type SettingDefinitionItem
 } from "obsidian";
 import {
 	findFenceBlocks,
@@ -128,17 +128,17 @@ export default class SelectCodeLinesHighlighterPlugin extends Plugin {
 			const pre = codeElement.parentElement;
 			if (!pre) continue;
 			pre.classList.add("select-code-lines-highlighter-reading");
-			const contentLayer = document.createElement("span");
+			const contentLayer = codeElement.createSpan();
 			contentLayer.className = "select-code-lines-highlighter-reading-content";
 			while (codeElement.firstChild) contentLayer.appendChild(codeElement.firstChild);
 			codeElement.appendChild(contentLayer);
 
 			const contentLineCount = block.closingLine - block.openingLine - 1;
 			const highlightedLines = new Set(getHighlightedLineNumbers(ranges, contentLineCount));
-			const markerLayer = document.createElement("span");
+			const markerLayer = codeElement.createSpan();
 			markerLayer.className = "select-code-lines-highlighter-reading-lines";
 			for (let line = 1; line <= contentLineCount; line += 1) {
-				const marker = document.createElement("span");
+				const marker = markerLayer.createSpan();
 				marker.className = "select-code-lines-highlighter-reading-line";
 				marker.setAttribute("aria-hidden", "true");
 				if (highlightedLines.has(line)) marker.classList.add("is-highlighted");
@@ -224,67 +224,60 @@ class SelectCodeLinesHighlighterSettingTab extends PluginSettingTab {
 		super(app, highlighter);
 	}
 
-	display(): void {
-		const { containerEl } = this;
-		containerEl.empty();
-		containerEl.createEl("h2", { text: "Select Code Lines Highlighter" });
-
-		new Setting(containerEl)
-			.setName("Highlight color")
-			.setDesc("Background color applied to highlighted code lines.")
-			.addColorPicker((picker) => picker
-				.setValue(this.highlighter.settings.highlightColor)
-				.onChange(async (value) => {
-					this.highlighter.settings.highlightColor = value;
-					await this.highlighter.saveSettings();
-				}));
-
-		new Setting(containerEl)
-			.setName("Highlight intensity")
-			.setDesc("Opacity of the highlight background.")
-			.addSlider((slider) => slider
-				.setLimits(10, 80, 5)
-				.setValue(this.highlighter.settings.highlightOpacity)
-				.setDisplayFormat((value) => `${value}%`)
-				.setInstant(true)
-				.onChange(async (value) => {
-					this.highlighter.settings.highlightOpacity = value;
-					await this.highlighter.saveSettings();
-				}));
-
-		new Setting(containerEl)
-			.setName("Accent color")
-			.setDesc("Color of the marker at the start of each highlighted line.")
-			.addColorPicker((picker) => picker
-				.setValue(this.highlighter.settings.accentColor)
-				.onChange(async (value) => {
-					this.highlighter.settings.accentColor = value;
-					await this.highlighter.saveSettings();
-				}));
-
-		new Setting(containerEl)
-			.setName("Accent width")
-			.setDesc("Width of the marker. Set it to zero to hide the marker.")
-			.addSlider((slider) => slider
-				.setLimits(0, 6, 1)
-				.setValue(this.highlighter.settings.accentWidth)
-				.setDisplayFormat((value) => `${value}px`)
-				.setInstant(true)
-				.onChange(async (value) => {
-					this.highlighter.settings.accentWidth = value;
-					await this.highlighter.saveSettings();
-				}));
-
-		new Setting(containerEl)
-			.setName("Restore defaults")
-			.setDesc("Reset all visual options to their original values.")
-			.addButton((button) => button
-				.setButtonText("Restore")
-				.onClick(async () => {
+	getSettingDefinitions(): SettingDefinitionItem<keyof HighlighterSettings>[] {
+		return [
+			{
+				name: "Highlight color",
+				desc: "Background color applied to highlighted code lines.",
+				control: { type: "color", key: "highlightColor", defaultValue: DEFAULT_SETTINGS.highlightColor }
+			},
+			{
+				name: "Highlight intensity",
+				desc: "Opacity of the highlight background.",
+				control: {
+					type: "slider",
+					key: "highlightOpacity",
+					min: 10,
+					max: 80,
+					step: 5,
+					defaultValue: DEFAULT_SETTINGS.highlightOpacity
+				}
+			},
+			{
+				name: "Accent color",
+				desc: "Color of the marker at the start of each highlighted line.",
+				control: { type: "color", key: "accentColor", defaultValue: DEFAULT_SETTINGS.accentColor }
+			},
+			{
+				name: "Accent width",
+				desc: "Width of the marker. Set it to zero to hide the marker.",
+				control: {
+					type: "slider",
+					key: "accentWidth",
+					min: 0,
+					max: 6,
+					step: 1,
+					defaultValue: DEFAULT_SETTINGS.accentWidth
+				}
+			},
+			{
+				name: "Restore defaults",
+				desc: "Reset all visual options to their original values.",
+				action: () => {
 					this.highlighter.settings = { ...DEFAULT_SETTINGS };
-					await this.highlighter.saveSettings();
-					this.display();
-				}));
+					void this.highlighter.saveSettings().then(() => this.update());
+				}
+			}
+		];
+	}
+
+	async setControlValue(key: string, value: unknown): Promise<void> {
+		if (!Object.prototype.hasOwnProperty.call(DEFAULT_SETTINGS, key)) return;
+		this.highlighter.settings = normalizeSettings({
+			...this.highlighter.settings,
+			[key]: value
+		});
+		await this.highlighter.saveSettings();
 	}
 }
 

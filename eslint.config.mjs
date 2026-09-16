@@ -1,20 +1,31 @@
-import eslint from "@eslint/js";
+import obsidianmd from "eslint-plugin-obsidianmd";
 import globals from "globals";
-import tseslint from "typescript-eslint";
+import { defineConfig, globalIgnores } from "eslint/config";
 
-export default tseslint.config(
-	{ ignores: ["main.js", "node_modules/**", "coverage/**"] },
-	eslint.configs.recommended,
-	...tseslint.configs.recommended,
+export default defineConfig(
+	globalIgnores([
+		"node_modules",
+		"coverage",
+		"esbuild.config.mjs",
+		"main.js",
+		"manifest.json",
+		"package.json",
+		"versions.json"
+	]),
+	{
+		languageOptions: {
+			globals: { ...globals.browser },
+			parserOptions: {
+				projectService: { allowDefaultProject: ["eslint.config.mjs"] },
+				tsconfigRootDir: import.meta.dirname
+			}
+		}
+	},
+	...obsidianmd.configs.recommended,
 	{
 		files: ["**/*.ts"],
-		languageOptions: {
-			globals: globals.browser,
-			parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname }
-		},
 		rules: {
 			"@typescript-eslint/consistent-type-imports": "error"
 		}
 	}
 );
-

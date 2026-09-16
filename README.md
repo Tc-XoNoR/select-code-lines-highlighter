@@ -60,6 +60,8 @@ The plugin includes its own renderer for the editor and Reading view. It does no
 
 ## Manual installation
 
+Requires Obsidian 1.13.0 or later.
+
 1. Download `main.js`, `manifest.json`, and `styles.css` from the latest GitHub release.
 2. Create `<your-vault>/.obsidian/plugins/select-code-lines-highlighter/`.
 3. Copy all three files into that directory.
