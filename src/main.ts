@@ -134,13 +134,17 @@ export default class SelectCodeLinesHighlighterPlugin extends Plugin {
 			codeElement.appendChild(contentLayer);
 
 			const contentLineCount = block.closingLine - block.openingLine - 1;
-			for (const line of getHighlightedLineNumbers(ranges, contentLineCount)) {
+			const highlightedLines = new Set(getHighlightedLineNumbers(ranges, contentLineCount));
+			const markerLayer = document.createElement("span");
+			markerLayer.className = "select-code-lines-highlighter-reading-lines";
+			for (let line = 1; line <= contentLineCount; line += 1) {
 				const marker = document.createElement("span");
 				marker.className = "select-code-lines-highlighter-reading-line";
 				marker.setAttribute("aria-hidden", "true");
-				marker.style.setProperty("--select-code-line", String(line - 1));
-				codeElement.appendChild(marker);
+				if (highlightedLines.has(line)) marker.classList.add("is-highlighted");
+				markerLayer.appendChild(marker);
 			}
+			codeElement.appendChild(markerLayer);
 		}
 	}
 
