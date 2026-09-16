@@ -25,7 +25,8 @@ export default defineConfig(
 	{
 		files: ["**/*.ts"],
 		rules: {
-			"@typescript-eslint/consistent-type-imports": "error"
+			"@typescript-eslint/consistent-type-imports": "error",
+			"obsidianmd/settings-tab/prefer-setting-definitions": "off"
 		}
 	}
 );
