@@ -1,0 +1,9 @@
+{
+	"id": "select-code-lines-highlighter",
+	"name": "Select Code Lines Highlighter",
+	"version": "0.1.0",
+	"minAppVersion": "1.5.0",
+	"description": "Highlight selected lines in fenced code blocks without modifying the code itself.",
+	"author": "Jacopo",
+	"isDesktopOnly": false
+}

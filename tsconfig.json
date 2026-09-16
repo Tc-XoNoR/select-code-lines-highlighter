@@ -1,0 +1,27 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"src/*": ["src/*"]
+		},
+		"inlineSourceMap": true,
+		"inlineSources": true,
+		"module": "ESNext",
+		"target": "ES6",
+		"allowJs": false,
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictPropertyInitialization": true,
+		"skipLibCheck": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noUnusedLocals": true,
+		"moduleResolution": "Bundler",
+		"importHelpers": true,
+		"downlevelIteration": true,
+		"esModuleInterop": true,
+		"lib": ["DOM", "ES6"]
+	},
+	"include": ["**/*.ts"]
+}

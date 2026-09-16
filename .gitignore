@@ -1,0 +1,8 @@
+node_modules/
+.pnpm-store/
+main.js
+*.log
+.DS_Store
+.idea/
+.vscode/
+coverage/
