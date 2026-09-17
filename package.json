@@ -1,6 +1,6 @@
 {
 	"name": "select-code-lines-highlighter",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Highlight selected lines in fenced code blocks without modifying the code itself.",
 	"type": "module",
 	"scripts": {
