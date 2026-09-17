@@ -5,7 +5,7 @@ Select Code Lines Highlighter is a self-contained Obsidian plugin that turns a m
 It is useful for terminal output, Nmap scans, logs, stack traces, configuration snippets, and other blocks where copying or rewriting content just to emphasize a few lines is undesirable.
 
 > [!IMPORTANT]
-> Version 0.1.0 is the initial release and is being prepared for submission to the official Obsidian Community Plugins directory.
+> Version 0.1.1 is the first release available from the official Obsidian Community Plugins directory.
 
 ## Features
 
