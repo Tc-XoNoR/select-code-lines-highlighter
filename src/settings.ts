@@ -7,7 +7,7 @@ export interface HighlighterSettings {
 
 export const DEFAULT_SETTINGS: HighlighterSettings = {
 	highlightColor: "#ffd54f",
-	highlightOpacity: 32,
+	highlightOpacity: 30,
 	accentColor: "#7c3aed",
 	accentWidth: 3
 };

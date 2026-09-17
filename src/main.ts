@@ -32,7 +32,10 @@ export default class SelectCodeLinesHighlighterPlugin extends Plugin {
 		this.applySettings();
 		this.addSettingTab(new SelectCodeLinesHighlighterSettingTab(this.app, this));
 		this.registerEditorExtension(this.createEditorHighlightExtension());
-		this.registerMarkdownPostProcessor((element, context) => this.renderReadingHighlights(element, context));
+		this.registerMarkdownPostProcessor(
+			(element, context) => this.renderReadingHighlights(element, context),
+			1000
+		);
 		this.registerEvent(this.app.workspace.on("editor-menu", (menu, editor) => {
 			this.addEditorMenuItems(menu, editor);
 		}));
@@ -128,14 +131,11 @@ export default class SelectCodeLinesHighlighterPlugin extends Plugin {
 			const pre = codeElement.parentElement;
 			if (!pre) continue;
 			pre.classList.add("select-code-lines-highlighter-reading");
-			const contentLayer = codeElement.createSpan();
-			contentLayer.className = "select-code-lines-highlighter-reading-content";
-			while (codeElement.firstChild) contentLayer.appendChild(codeElement.firstChild);
-			codeElement.appendChild(contentLayer);
+			pre.querySelector(":scope > .select-code-lines-highlighter-reading-lines")?.remove();
 
 			const contentLineCount = block.closingLine - block.openingLine - 1;
 			const highlightedLines = new Set(getHighlightedLineNumbers(ranges, contentLineCount));
-			const markerLayer = codeElement.createSpan();
+			const markerLayer = pre.createSpan();
 			markerLayer.className = "select-code-lines-highlighter-reading-lines";
 			for (let line = 1; line <= contentLineCount; line += 1) {
 				const marker = markerLayer.createSpan();
@@ -144,7 +144,6 @@ export default class SelectCodeLinesHighlighterPlugin extends Plugin {
 				if (highlightedLines.has(line)) marker.classList.add("is-highlighted");
 				markerLayer.appendChild(marker);
 			}
-			codeElement.appendChild(markerLayer);
 		}
 	}
 

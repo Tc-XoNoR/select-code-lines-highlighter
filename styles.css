@@ -1,33 +1,37 @@
 .markdown-source-view.mod-cm6 .cm-line.select-code-lines-highlighter-editor-line {
 	background-color: color-mix(
 		in srgb,
-		var(--select-code-lines-highlight-color, #ffd54f) var(--select-code-lines-highlight-opacity, 32%),
+		var(--select-code-lines-highlight-color, #ffd54f) var(--select-code-lines-highlight-opacity, 30%),
 		transparent
 	) !important;
 	box-shadow: inset var(--select-code-lines-accent-width, 3px) 0 0
 		var(--select-code-lines-accent-color, #7c3aed) !important;
 }
 
+.select-code-lines-highlighter-reading {
+	position: relative;
+	isolation: isolate;
+}
+
 .select-code-lines-highlighter-reading > code {
 	display: block;
 	position: relative;
-	isolation: isolate;
+	z-index: 1;
 	box-sizing: border-box;
 	min-width: 100%;
 	width: max-content;
-}
-
-.select-code-lines-highlighter-reading-content {
-	position: relative;
-	z-index: 1;
 }
 
 .select-code-lines-highlighter-reading-lines {
 	position: absolute;
 	z-index: 0;
 	inset: 0;
+	box-sizing: border-box;
+	padding: inherit;
 	display: flex;
 	flex-direction: column;
+	font-size: var(--code-size);
+	line-height: var(--line-height-normal);
 	pointer-events: none;
 }
 
@@ -41,7 +45,7 @@
 .select-code-lines-highlighter-reading-line.is-highlighted {
 	background-color: color-mix(
 		in srgb,
-		var(--select-code-lines-highlight-color, #ffd54f) var(--select-code-lines-highlight-opacity, 32%),
+		var(--select-code-lines-highlight-color, #ffd54f) var(--select-code-lines-highlight-opacity, 30%),
 		transparent
 	);
 	box-shadow: inset var(--select-code-lines-accent-width, 3px) 0 0
