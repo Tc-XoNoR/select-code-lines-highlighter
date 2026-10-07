@@ -51,3 +51,21 @@
 	box-shadow: inset var(--select-code-lines-accent-width, 3px) 0 0
 		var(--select-code-lines-accent-color, #7c3aed);
 }
+.select-code-lines-highlighter-text {
+	--select-code-lines-text-color: #ffd54f;
+	background-color: color-mix(in srgb,
+		var(--select-code-lines-text-color)
+		var(--select-code-lines-highlight-opacity, 30%), transparent) !important;
+}
+
+.select-code-lines-highlighter-critical {
+	--select-code-lines-text-color: #ff5252;
+}
+
+.menu-item:has(.select-code-lines-menu-yellow) .menu-item-icon {
+	color: #ffd54f;
+}
+
+.menu-item:has(.select-code-lines-menu-red) .menu-item-icon {
+	color: #ff5252;
+}

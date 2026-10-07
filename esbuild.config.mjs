@@ -16,7 +16,7 @@ const context = await esbuild.context({
 	banner: { js: banner },
 	entryPoints: [join(projectDirectory, "src", "main.ts")],
 	bundle: true,
-	external: ["obsidian", "electron", "@codemirror/state", "@codemirror/view", ...builtinModules],
+	external: ["obsidian", "electron", "@codemirror/state", "@codemirror/view", "@codemirror/commands", ...builtinModules],
 	format: "cjs",
 	target: "es2018",
 	logLevel: "info",

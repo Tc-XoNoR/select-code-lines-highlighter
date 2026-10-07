@@ -1,4 +1,5 @@
 export interface HighlighterSettings {
+	selectionMode: "text" | "lines";
 	highlightColor: string;
 	highlightOpacity: number;
 	accentColor: string;
@@ -6,6 +7,7 @@ export interface HighlighterSettings {
 }
 
 export const DEFAULT_SETTINGS: HighlighterSettings = {
+	selectionMode: "text",
 	highlightColor: "#ffd54f",
 	highlightOpacity: 30,
 	accentColor: "#7c3aed",
@@ -26,6 +28,7 @@ function integerInRange(value: unknown, minimum: number, maximum: number): value
 export function normalizeSettings(value: unknown): HighlighterSettings {
 	const source = value && typeof value === "object" ? value as Partial<HighlighterSettings> : {};
 	return {
+		selectionMode: source.selectionMode === "lines" ? "lines" : "text",
 		highlightColor: isHexColor(source.highlightColor)
 			? source.highlightColor.toLowerCase()
 			: DEFAULT_SETTINGS.highlightColor,

@@ -169,6 +169,12 @@ describe("fenced blocks", () => {
 		const lines = ["```text hl:1", "one", "```", "~~~bash hl:1", "two", "~~~"];
 		expect(matchRenderedFenceBlocks(lines, ["normalized text"])).toEqual([null]);
 	});
+	it("matches duplicate code to its own section rather than the first block", () => {
+		const lines = ["```text hl:1", "same", "```", "gap", "```text", "same", "```"];
+		expect(matchRenderedFenceBlocks(lines, ["same\n"], { start: 4, end: 6 }))
+			.toMatchObject([{ openingLine: 4, closingLine: 6 }]);
+		expect(matchRenderedFenceBlocks(lines, ["same\n"])).toEqual([null]);
+	});
 });
 
 describe("opening fence updates", () => {

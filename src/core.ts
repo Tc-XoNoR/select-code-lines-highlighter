@@ -175,16 +175,20 @@ function normalizeRenderedCode(text: string): string {
 
 export function matchRenderedFenceBlocks(
 	lines: readonly string[],
-	renderedCode: readonly string[]
+	renderedCode: readonly string[],
+	section?: LineRange
 ): RenderedFenceMatch[] {
-	const blocks = findFenceBlocks(lines);
+	const blocks = findFenceBlocks(lines).filter(block => !section
+		|| block.openingLine >= section.start && block.closingLine <= section.end);
 	const used = new Set<number>();
 	const canUseOrdinalFallback = blocks.length === renderedCode.length;
 
 	return renderedCode.map((text, renderedIndex) => {
 		const normalized = normalizeRenderedCode(text);
-		let blockIndex = blocks.findIndex((block, index) => !used.has(index)
-			&& lines.slice(block.openingLine + 1, block.closingLine).join("\n") === normalized);
+		const matchingIndices = blocks.flatMap((block, index) => !used.has(index)
+			&& lines.slice(block.openingLine + 1, block.closingLine).join("\n") === normalized ? [index] : []);
+		// A fragment with duplicate source blocks has no reliable ordinal mapping.
+		let blockIndex = matchingIndices.length === 1 || canUseOrdinalFallback ? (matchingIndices[0] ?? -1) : -1;
 		if (blockIndex < 0 && canUseOrdinalFallback && !used.has(renderedIndex)) {
 			blockIndex = renderedIndex;
 		}
@@ -250,7 +254,7 @@ interface HighlightToken {
 	spec: string;
 }
 
-function findHighlightTokens(info: string): HighlightToken[] | null {
+export function findHighlightTokens(info: string, name = "hl"): HighlightToken[] | null {
 	const tokens: HighlightToken[] = [];
 	let quote: "\"" | "'" | null = null;
 	let escaped = false;
@@ -267,7 +271,7 @@ function findHighlightTokens(info: string): HighlightToken[] | null {
 			quote = character;
 			continue;
 		}
-		if ((index === 0 || /\s/.test(info[index - 1])) && info.startsWith("hl:", index)) {
+		if ((index === 0 || /\s/.test(info[index - 1])) && info.startsWith(`${name}:`, index)) {
 			let end = index + 3;
 			while (end < info.length && !/\s/.test(info[end])) end += 1;
 			tokens.push({ start: index, end, spec: info.slice(index + 3, end) });

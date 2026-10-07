@@ -23,6 +23,15 @@ export default defineConfig(
 	},
 	...obsidianmd.configs.recommended,
 	{
+		files: ["tests/**/*.ts"],
+		// DOM fixtures implement the Obsidian helpers, so must use standard DOM APIs.
+		rules: { "obsidianmd/prefer-create-el": "off" }
+	},
+	{
+		files: ["vitest.config.ts"],
+		rules: { "obsidianmd/no-nodejs-modules": "off" }
+	},
+	{
 		files: ["**/*.ts"],
 		rules: {
 			"@typescript-eslint/consistent-type-imports": "error",
